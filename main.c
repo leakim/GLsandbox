@@ -247,7 +247,7 @@ static void main_loop(void)
     }
 }
 
-static GLchar* load_file(char* fname)
+static GLchar* load_file(const char* fname)
 {
     int len;
     FILE *fp = fopen(fname, "r");
@@ -267,15 +267,23 @@ static GLchar* load_file(char* fname)
     return p;
 }
 
-static int init_files(void)
+static int init_files(const char *fragment, const char *vertex)
 {
-        vertex_shader_source   = load_file("vertex");
-        fragment_shader_source = load_file("fragment");
+        vertex_shader_source   = load_file(vertex);
+        fragment_shader_source = load_file(fragment);
         return ( vertex_shader_source && fragment_shader_source );
 }
 
 int main(int argc, char *argv[])
 {
+    char *fragment = "fragment";
+    char *vertex   = "vertex";
+
+    if(argc >= 2) {
+        fragment = argv[1];
+        vertex   = argv[2];
+    }
+
     if( glfwInit() != GL_TRUE ) {
         fputs("Could not initialize framework.\n", stderr);
         return -1;
@@ -287,7 +295,7 @@ int main(int argc, char *argv[])
     if( !check_extensions() )
         return -1;
 
-    if( !init_files() )
+    if( !init_files(fragment, vertex) )
         return -1;
 
     if( !init_resources() )
