@@ -239,11 +239,13 @@ static int init_resources(void)
     return 1;
 }
 
-static void main_loop(void)
+static void main_loop(int loop_max)
 {
+    int i = 0;
     glfwSetTime(0);
-    while( glfwGetWindowParam(GLFW_OPENED) == GL_TRUE ) {
+    while( glfwGetWindowParam(GLFW_OPENED) == GL_TRUE && i < loop_max) {
         display(glfwGetTime());
+        i++;
     }
 }
 
@@ -279,9 +281,9 @@ int main(int argc, char *argv[])
     char *fragment = "fragment";
     char *vertex   = "vertex";
 
-    if(argc >= 2) {
-        fragment = argv[1];
-        vertex   = argv[2];
+    if(argc >= 3) {
+        fragment = argv[2];
+        vertex   = argv[3];
     }
 
     if( glfwInit() != GL_TRUE ) {
@@ -301,7 +303,7 @@ int main(int argc, char *argv[])
     if( !init_resources() )
         return -1;
 
-    main_loop();
+    main_loop(atoi(argv[1]));
 
     glfwTerminate();
     return 0;
